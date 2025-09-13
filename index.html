@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorNest - Where Taste Finds a Home</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles and Tailwind Config -->
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-primary': '#F9EBE4',
+                        'brand-secondary': '#6D4C41',
+                        'brand-text': '#5D4037',
+                        'brand-bg': '#FFF8F2',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header id="header" class="bg-brand-bg/80 backdrop-blur-sm sticky top-0 z-40 w-full border-b border-brand-primary">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- Replace with actual logo URL -->
+                <img src="https://placehold.co/100x100/F9EBE4/6D4C41?text=FN&font=playfair+display" alt="FlavorNest Logo" class="h-12 w-12 rounded-full border-2 border-brand-primary shadow-sm">
+                <h1 class="text-2xl font-bold text-brand-secondary">FlavorNest</h1>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#home" class="inactive-nav hover:active-nav transition-colors">Home</a>
+                <a href="#menu" class="inactive-nav hover:active-nav transition-colors">Menu</a>
+                <a href="#reviews" class="inactive-nav hover:active-nav transition-colors">Reviews</a>
+            </nav>
+            <button onclick="toggleCartModal()" class="btn btn-primary px-4 py-2 rounded-full flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H4.72l-.38-1.52A1 1 0 003 1z" /><path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" /></svg>
+                <span id="cart-count">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="relative pt-16 md:pt-24 pb-16">
+            <div class="absolute inset-0 bg-brand-primary opacity-50"></div>
+            <div class="container mx-auto px-6 text-center relative">
+                <h2 class="text-4xl md:text-6xl font-bold text-brand-secondary leading-tight">Handcrafted Delicacies, Made with Love</h2>
+                <p class="mt-4 text-lg text-brand-text max-w-2xl mx-auto">Experience the authentic taste of homemade sweets and savories, crafted with the freshest ingredients and a touch of tradition.</p>
+                <a href="#menu" class="mt-8 inline-block btn btn-primary px-8 py-3 rounded-full text-lg">Explore Our Menu</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 bg-brand-bg">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 text-center md:text-left">
+                    <h3 class="text-3xl font-bold text-brand-secondary">Where Taste Finds a Home</h3>
+                    <p class="mt-4 text-brand-text leading-relaxed">FlavorNest started from a simple passion for cooking, balanced with the hustle of student life. Every dish we create is a piece of our heart, made with the same care and quality we'd want for our own family. Thank you for supporting a small dream and letting us share our flavors with you.</p>
+                </div>
+                 <div class="md:w-1/2 flex justify-center">
+                    <!-- Replace with actual logo URL -->
+                    <img src="https://placehold.co/200x200/F9EBE4/6D4C41?text=FN&font=playfair+display" alt="FlavorNest Logo Large" class="h-48 w-48 rounded-full shadow-xl border-4 border-white">
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="py-16 bg-brand-primary">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-brand-secondary mb-12">Our Signature Offerings</h2>
+                <div id="menu-items" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Menu items will be injected here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section id="reviews" class="py-16 bg-brand-bg">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-brand-secondary mb-12">What Our Customers Say</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Review 1 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-brand-primary">
+                        <p class="text-brand-text italic">"The Kesar Mawa Modaks were absolutely divine! So fresh and perfectly sweet. You can taste the quality in every bite. Will definitely be ordering again!"</p>
+                        <p class="mt-4 font-bold text-brand-secondary text-right">- Anjali P.</p>
+                    </div>
+                    <!-- Review 2 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-brand-primary">
+                        <p class="text-brand-text italic">"FlavorNest is my go-to for festive sweets now. The packaging is beautiful, making it perfect for gifting. The Mama Rolls were a huge hit at our family gathering."</p>
+                        <p class="mt-4 font-bold text-brand-secondary text-right">- Rohan M.</p>
+                    </div>
+                    <!-- Review 3 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-brand-primary">
+                        <p class="text-brand-text italic">"Incredible taste and so hygienic. It feels so good to support a local, student-run business that puts so much love into their food. Highly recommended!"</p>
+                        <p class="mt-4 font-bold text-brand-secondary text-right">- Priya S.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-secondary text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 FlavorNest. All Rights Reserved.</p>
+            <p class="mt-2">Follow our journey on <a href="https://www.instagram.com/_flavornest_" target="_blank" class="underline hover:text-brand-primary transition-colors">Instagram</a></p>
+        </div>
+    </footer>
+    
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0 invisible" onclick="event.target === this && toggleCartModal()">
+        <div class="modal-content bg-white w-full max-w-lg rounded-lg shadow-2xl p-6 md:p-8 transform scale-95">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h3 class="text-2xl font-bold text-brand-secondary">Your Order</h3>
+                <button onclick="toggleCartModal()" class="text-gray-400 hover:text-gray-700">&times;</button>
+            </div>
+            
+            <div id="cart-items-container" class="space-y-4 max-h-64 overflow-y-auto pr-2">
+                <!-- Cart items will be injected here -->
+                <p id="empty-cart-message" class="text-gray-500">Your cart is empty.</p>
+            </div>
+
+            <div id="cart-summary" class="border-t pt-4 mt-4 hidden">
+                <div class="flex justify-between items-center font-bold text-lg text-brand-secondary">
+                    <span>Total</span>
+                    <span id="cart-total">₹0</span>
+                </div>
+                
+                <h4 class="text-xl font-bold text-brand-secondary mt-6 mb-3">Delivery Details</h4>
+                <form id="order-form" class="space-y-4">
+                    <div>
+                        <label for="customer-name" class="block text-sm font-medium text-brand-text">Full Name</label>
+                        <input type="text" id="customer-name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-brand-secondary focus:border-brand-secondary">
+                    </div>
+                    <div>
+                        <label for="customer-phone" class="block text-sm font-medium text-brand-text">WhatsApp Number</label>
+                        <input type="tel" id="customer-phone" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-brand-secondary focus:border-brand-secondary">
+                    </div>
+                    <div>
+                        <label for="customer-address" class="block text-sm font-medium text-brand-text">Full Address (or Pickup)</label>
+                        <textarea id="customer-address" rows="3" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-brand-secondary focus:border-brand-secondary" placeholder="Please provide your full address for delivery, or write 'Pickup'"></textarea>
+                    </div>
+                    <button type="submit" class="w-full btn btn-primary py-3 rounded-lg text-lg flex items-center justify-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                        <span>Place Order via WhatsApp</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 transform translate-y-10 transition-all duration-300">
+        Item added to cart!
+    </div>
+
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
