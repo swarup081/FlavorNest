@@ -13,7 +13,7 @@ const menuData = [
         description: "Classic steamed modaks with a rich filling of mawa, nuts, and fragrant saffron.",
         price: 150,
         unit: "6 Pieces",
-        image: "https://images.placeholders.dev/?width=400&height=300&text=Modak&bgColor=%23F9EBE4&textColor=%236D4C41" // Replace with actual image URL
+        image: "./images/modak_productimage.jpeg" // Replace with actual image URL
     },
     {
         id: 2,
