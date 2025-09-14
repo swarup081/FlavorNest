@@ -27,7 +27,7 @@ const menuData = [
         id: 3,
         name: "Combo of modak & rolls(Pre Order)",
         description: "Festive combo of 6 kesar mawa modaks and 4 shahi mawa rolls. Perfect for celebrations and gifting.",
-        price: 249,
+        price: 264,
         unit: "6 Modaks + 4 Rolls",
         image: "./images/combo1.jpeg" // combo image of 1box modak and 1 box rolls
     }
