@@ -57,10 +57,12 @@ function renderMenu() {
                 <div class="mt-6 w-full">
                     ${
                         cart[item.id]
-                        ? `<div class="flex items-center justify-center space-x-4">
-                                <button onclick="decreaseQuantity(${item.id})" class="btn btn-secondary px-4 py-2 rounded-lg">-</button>
-                                <span class="text-xl font-bold">${cart[item.id]}</span>
-                                <button onclick="increaseQuantity(${item.id})" class="btn btn-secondary px-4 py-2 rounded-lg">+</button>
+                        ? `<div class="flex items-center justify-center">
+                                <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                                    <button onclick="decreaseQuantity(${item.id})" class="px-4 py-2 text-brand-secondary hover:bg-brand-primary transition-colors font-bold">-</button>
+                                    <span class="px-4 py-2 border-x border-gray-300 font-bold text-lg">${cart[item.id]}</span>
+                                    <button onclick="increaseQuantity(${item.id})" class="px-4 py-2 text-brand-secondary hover:bg-brand-primary transition-colors font-bold">+</button>
+                                </div>
                            </div>`
                         : `<button onclick="increaseQuantity(${item.id})" class="w-full btn btn-primary py-2 rounded-lg">Add to Cart</button>`
                     }
@@ -112,15 +114,15 @@ function updateCart() {
                 <div class="flex justify-between items-center text-brand-text">
                     <div>
                         <p class="font-semibold">${item.name}</p>
-                        <p class="text-sm text-gray-500">₹${item.price} x ${quantity}</p>
+                        <p class="text-sm text-gray-500">₹${item.price}</p>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <span class="font-semibold w-16 text-right">₹${itemTotal}</span>
-                        <div class="flex items-center space-x-2">
-                            <button onclick="decreaseQuantity(${item.id})" class="btn btn-sm btn-secondary rounded-md">-</button>
-                            <span>${quantity}</span>
-                            <button onclick="increaseQuantity(${item.id})" class="btn btn-sm btn-secondary rounded-md">+</button>
+                    <div class="flex items-center">
+                        <div class="flex items-center border border-gray-300 rounded-md overflow-hidden mr-4">
+                            <button onclick="decreaseQuantity(${item.id})" class="px-2 py-1 text-brand-secondary hover:bg-brand-primary transition-colors">-</button>
+                            <span class="px-3 py-1 border-x border-gray-300 font-semibold">${quantity}</span>
+                            <button onclick="increaseQuantity(${item.id})" class="px-2 py-1 text-brand-secondary hover:bg-brand-primary transition-colors">+</button>
                         </div>
+                        <span class="font-bold w-20 text-right">₹${itemTotal}</span>
                     </div>
                 </div>
             `;
@@ -160,10 +162,10 @@ function toggleCartModal() {
 orderForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('customer-name').value;
-    const phone = document.getElementById('customer-phone').value;
+    //const phone = document.getElementById('customer-phone').value;
     const address = document.getElementById('customer-address').value;
 
-    let message = `Hi FlavorNest! 👋 I would like to place an order:\n\n`;
+    let message = `Hi FlavorNest! I would like to place an order:\n\n`;
     let totalPrice = 0;
 
     Object.keys(cart).forEach(itemId => {
@@ -176,7 +178,7 @@ orderForm.addEventListener('submit', (e) => {
     message += `\n*Total: ₹${totalPrice}*\n\n`;
     message += `*My Details:*\n`;
     message += `Name: ${name}\n`;
-    message += `Phone: ${phone}\n`;
+   // message += `Phone: ${phone}\n`;
     message += `Address/Pickup: ${address}\n\n`;
     message += `Please confirm my order. Thank you!`;
 
@@ -192,8 +194,54 @@ orderForm.addEventListener('submit', (e) => {
 });
 
 
+// --- Autoscrolling reviews ---
+function setupReviewAutoscroll() {
+    const reviewsContainer = document.querySelector('#reviews .grid');
+    if (!reviewsContainer || reviewsContainer.children.length < 2) return;
+
+    let scrollInterval;
+
+    const startScrolling = () => {
+        scrollInterval = setInterval(() => {
+            // Check if the user has manually scrolled
+            if (reviewsContainer.dataset.manualScroll) return;
+
+            const reviewWidth = reviewsContainer.children[0].offsetWidth;
+            const gap = parseInt(window.getComputedStyle(reviewsContainer).gap) || 0;
+            
+            // If near the end, loop back to the start
+            if (reviewsContainer.scrollLeft + reviewsContainer.clientWidth >= reviewsContainer.scrollWidth - 1) {
+                reviewsContainer.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                reviewsContainer.scrollBy({ left: reviewWidth + gap, behavior: 'smooth' });
+            }
+        }, 3000);
+    };
+
+    const stopScrolling = () => {
+        clearInterval(scrollInterval);
+    };
+
+    reviewsContainer.addEventListener('mouseenter', stopScrolling);
+    reviewsContainer.addEventListener('mouseleave', startScrolling);
+    
+    // Stop autoscroll if user interacts with the scrollbar
+    let scrollTimeout;
+    reviewsContainer.addEventListener('scroll', () => {
+        reviewsContainer.dataset.manualScroll = 'true';
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            delete reviewsContainer.dataset.manualScroll;
+        }, 5000); // Resume autoscroll after 5s of inactivity
+    }, { passive: true });
+
+    startScrolling();
+}
+
+
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     renderMenu();
     updateCart();
+    setupReviewAutoscroll();
 });

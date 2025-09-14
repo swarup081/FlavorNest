@@ -37,3 +37,41 @@ h1, h2, h3, h4, h5, h6 {
 .modal-content {
     transition: transform 0.3s ease-in-out;
 }
+
+@media (max-width: 768px) {
+    #reviews .grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch; /* for smooth scrolling on iOS */
+        padding-bottom: 1rem; /* Add some space for the scrollbar */
+    }
+    #reviews .grid > div {
+        flex: 0 0 90%;
+        scroll-snap-align: start;
+    }
+    /* Hide scrollbar for a cleaner look */
+    #reviews .grid::-webkit-scrollbar {
+        display: none;
+    }
+    #reviews .grid {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+
+    #cart-modal .modal-content {
+        padding: 1rem;
+    }
+
+    #cart-items-container .flex.justify-between {
+        flex-wrap: wrap;
+        row-gap: 0.5rem; /* Add some space between the wrapped rows */
+    }
+
+    /* This targets the right-hand side div holding the controls and price */
+    #cart-items-container .flex.justify-between > div:last-child {
+        width: 100%;
+        justify-content: flex-end; /* This works because it's a flex container itself */
+    }
+}
