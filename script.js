@@ -1,3 +1,10 @@
+// --- SUPABASE INITIALIZATION ---
+const SUPABASE_URL = 'https://icvomirhadfqncpogtnq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imljdm9taXJoYWRmcW5jcG9ndG5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4MzUxNzMsImV4cCI6MjA3MzQxMTE3M30.o6fmCFUy_p54gk5XRPm9Lcj-b-8zMUV7skf19MLIc4U';
+// We will define the client variable here, but initialize it later to prevent a race condition.
+let supabaseClient;
+
+
 // --- DATA ---
 const menuData = [
     {
@@ -29,6 +36,7 @@ const menuData = [
 let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
 // --- DOM ELEMENTS ---
+// These are safe to define here because they will be accessed inside the DOMContentLoaded listener
 const menuContainer = document.getElementById('menu-items');
 const cartModal = document.getElementById('cart-modal');
 const cartCount = document.getElementById('cart-count');
@@ -37,13 +45,33 @@ const emptyCartMessage = document.getElementById('empty-cart-message');
 const cartSummary = document.getElementById('cart-summary');
 const cartTotalEl = document.getElementById('cart-total');
 const orderForm = document.getElementById('order-form');
+const submitOrderBtn = document.getElementById('submit-order-button');
 const toastEl = document.getElementById('toast');
-const FLAVORNEST_WHATSAPP_NUMBER = "911234567890"; // IMPORTANT: Replace with her actual WhatsApp number
+const FLAVORNEST_WHATSAPP_NUMBER = "9401236978"; 
 
 // --- FUNCTIONS ---
 
+/**
+ * Tracks an event by sending it to the Supabase analytics table.
+ * @param {string} eventType - The type of event (e.g., 'add_to_cart').
+ * @param {object} [details={}] - Additional details about the event.
+ */
+async function trackEvent(eventType, details = {}) {
+    // Check if client is initialized before using it
+    if (!supabaseClient) return;
+    try {
+        const { error } = await supabaseClient
+            .from('analytics')
+            .insert([{ event_type: eventType, details: details }]);
+        if (error) throw error;
+    } catch (error) {
+        console.error('Error tracking event:', error.message);
+    }
+}
+
 // Render menu items on page load
 function renderMenu() {
+    if (!menuContainer) return; // Defensive check
     menuContainer.innerHTML = menuData.map(item => `
         <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
             <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover">
@@ -79,6 +107,8 @@ function increaseQuantity(itemId) {
     } else {
         cart[itemId] = 1;
     }
+    const item = menuData.find(p => p.id == itemId);
+    trackEvent('add_to_cart', { item_name: item.name, item_id: item.id });
     updateCart();
     renderMenu();
     showToast();
@@ -99,12 +129,13 @@ function updateCart() {
     if (Object.keys(cart).length === 0) {
         emptyCartMessage.style.display = 'block';
         cartSummary.style.display = 'none';
-        cartItemsContainer.innerHTML = '';
+        cartItemsContainer.innerHTML = ''; // Clear previous items
     } else {
         emptyCartMessage.style.display = 'none';
         cartSummary.style.display = 'block';
         cartItemsContainer.innerHTML = Object.keys(cart).map(itemId => {
             const item = menuData.find(p => p.id == itemId);
+            if (!item) return ''; // Gracefully handle if item not found
             const quantity = cart[itemId];
             const itemTotal = item.price * quantity;
             totalItems += quantity;
@@ -159,57 +190,103 @@ function toggleCartModal() {
 }
 
 // Handle order submission
-orderForm.addEventListener('submit', (e) => {
+async function handleOrderSubmit(e) {
     e.preventDefault();
+
+    // Double check that the client is initialized
+    if (!supabaseClient) {
+        alert('Connection to the database is not ready. Please try again in a moment.');
+        return;
+    }
+
+    submitOrderBtn.disabled = true;
+    submitOrderBtn.innerText = 'Processing...';
+
     const name = document.getElementById('customer-name').value;
-    //const phone = document.getElementById('customer-phone').value;
     const address = document.getElementById('customer-address').value;
 
-    let message = `Hi FlavorNest! I would like to place an order:\n\n`;
-    let totalPrice = 0;
+    try {
+        const { data: customerData, error: customerError } = await supabaseClient
+            .from('customers')
+            .insert([{ name, address }])
+            .select()
+            .single();
 
-    Object.keys(cart).forEach(itemId => {
-        const item = menuData.find(p => p.id == itemId);
-        const quantity = cart[itemId];
-        message += `*${item.name}* (x${quantity}) - ₹${item.price * quantity}\n`;
-        totalPrice += item.price * quantity;
-    });
-    
-    message += `\n*Total: ₹${totalPrice}*\n\n`;
-    message += `*My Details:*\n`;
-    message += `Name: ${name}\n`;
-   // message += `Phone: ${phone}\n`;
-    message += `Address/Pickup: ${address}\n\n`;
-    message += `Please confirm my order. Thank you!`;
+        if (customerError) throw customerError;
 
-    const whatsappUrl = `https://wa.me/${9401236978}?text=${encodeURIComponent(message)}`;
-    
-    window.open(whatsappUrl, '_blank');
-    
-    // Clear cart and form after submission
-    cart = {};
-    updateCart();
-    orderForm.reset();
-    toggleCartModal();
-});
+        let totalPrice = 0;
+        const orderItems = Object.keys(cart).map(itemId => {
+            const item = menuData.find(p => p.id == itemId);
+            const quantity = cart[itemId];
+            totalPrice += item.price * quantity;
+            return {
+                menu_item_id: item.id,
+                quantity: quantity,
+                price: item.price
+            };
+        });
+
+        const { data: orderData, error: orderError } = await supabaseClient
+            .from('orders')
+            .insert([{ customer_id: customerData.id, total_price: totalPrice }])
+            .select()
+            .single();
+
+        if (orderError) throw orderError;
+
+        const itemsToInsert = orderItems.map(item => ({ ...item, order_id: orderData.id }));
+        const { error: orderItemsError } = await supabaseClient
+            .from('order_items')
+            .insert(itemsToInsert);
+
+        if (orderItemsError) throw orderItemsError;
+
+        trackEvent('place_order', { customer_name: name, total_price: totalPrice, order_id: orderData.id });
+
+        let message = `Hi FlavorNest! I would like to place an order:\n\n(Order ID: ${orderData.id.substring(0, 8)})\n\n`;
+        Object.keys(cart).forEach(itemId => {
+            const item = menuData.find(p => p.id == itemId);
+            const quantity = cart[itemId];
+            message += `*${item.name}* (x${quantity}) - ₹${item.price * quantity}\n`;
+        });
+        message += `\n*Total: ₹${totalPrice}*\n\n`;
+        message += `*My Details:*\n`;
+        message += `Name: ${name}\n`;
+        message += `Address/Pickup: ${address}\n\n`;
+        message += `Please confirm my order. Thank you!`;
+
+        const whatsappUrl = `https://wa.me/${FLAVORNEST_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+
+        alert('Your order has been saved successfully!');
+        cart = {};
+        updateCart();
+        renderMenu();
+        orderForm.reset();
+        toggleCartModal();
+
+    } catch (error) {
+        console.error('Error placing order:', error.message);
+        alert('There was an error saving your order. Please try again or contact us directly.');
+    } finally {
+        submitOrderBtn.disabled = false;
+        submitOrderBtn.innerText = 'Place Order via WhatsApp';
+    }
+}
 
 
 // --- Autoscrolling reviews ---
 function setupReviewAutoscroll() {
     const reviewsContainer = document.querySelector('#reviews .grid');
-    if (!reviewsContainer || reviewsContainer.children.length < 2) return;
+    if (!reviewsContainer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let scrollInterval;
 
     const startScrolling = () => {
         scrollInterval = setInterval(() => {
-            // Check if the user has manually scrolled
-            if (reviewsContainer.dataset.manualScroll) return;
-
             const reviewWidth = reviewsContainer.children[0].offsetWidth;
             const gap = parseInt(window.getComputedStyle(reviewsContainer).gap) || 0;
             
-            // If near the end, loop back to the start
             if (reviewsContainer.scrollLeft + reviewsContainer.clientWidth >= reviewsContainer.scrollWidth - 1) {
                 reviewsContainer.scrollTo({ left: 0, behavior: 'smooth' });
             } else {
@@ -218,30 +295,37 @@ function setupReviewAutoscroll() {
         }, 3000);
     };
 
-    const stopScrolling = () => {
-        clearInterval(scrollInterval);
-    };
+    const stopScrolling = () => clearInterval(scrollInterval);
 
     reviewsContainer.addEventListener('mouseenter', stopScrolling);
     reviewsContainer.addEventListener('mouseleave', startScrolling);
+    reviewsContainer.addEventListener('focusin', stopScrolling);
+    reviewsContainer.addEventListener('focusout', startScrolling);
     
-    // Stop autoscroll if user interacts with the scrollbar
-    let scrollTimeout;
-    reviewsContainer.addEventListener('scroll', () => {
-        reviewsContainer.dataset.manualScroll = 'true';
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            delete reviewsContainer.dataset.manualScroll;
-        }, 5000); // Resume autoscroll after 5s of inactivity
-    }, { passive: true });
-
     startScrolling();
 }
 
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+    // ** THE FIX IS HERE **
+    // Initialize the Supabase client now that we are sure all external scripts are loaded.
+    try {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (e) {
+        console.error("Error initializing Supabase client:", e);
+        alert("Could not connect to the database. Some features may not work.");
+        // We still want to render the menu even if Supabase fails
+    }
+
+    // Now, run the functions to build the page
     renderMenu();
     updateCart();
     setupReviewAutoscroll();
+
+    // Attach the form submit listener here
+    if (orderForm) {
+        orderForm.addEventListener('submit', handleOrderSubmit);
+    }
 });
+
