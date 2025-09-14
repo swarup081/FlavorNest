@@ -47,7 +47,7 @@ const cartTotalEl = document.getElementById('cart-total');
 const orderForm = document.getElementById('order-form');
 const submitOrderBtn = document.getElementById('submit-order-button');
 const toastEl = document.getElementById('toast');
-const FLAVORNEST_WHATSAPP_NUMBER = "+91 9401236978"; 
+const FLAVORNEST_WHATSAPP_NUMBER = "919401236978"; 
 
 // --- FUNCTIONS ---
 
