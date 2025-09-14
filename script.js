@@ -9,27 +9,27 @@ let supabaseClient;
 const menuData = [
     {
         id: 1,
-        name: "Kesar Mawa Modak",
-        description: "Classic steamed modaks with a rich filling of mawa, nuts, and fragrant saffron.",
-        price: 150,
+        name: "Kesar Mawa Modak(Pre Order)",
+        description: "Delicate homemade mawa modaks with kesar and premium dry fruits. Perfect for festivals, celebrations, and gifting.",
+        price: 129,
         unit: "6 Pieces",
-        image: "./images/modak_productimage.jpeg" // Replace with actual image URL
+        image: "./images/modak_productimage.jpeg" // modak image
     },
     {
         id: 2,
-        name: "Mama Roll",
-        description: "A delightful savory roll packed with flavorful fillings, perfect for a snack.",
-        price: 120,
+        name: "Shahi Mawa Rolls(Pre Order)",
+        description: "Rich rolls stuffed with fresh mawa, fried in ghee and coated in sugar syrup, garnished with grated mawa, boondi, and dry fruits. Ideal for festivals, special occasions, and gifting.",
+        price: 149,
         unit: "4 Pieces",
-        image: "https://images.placeholders.dev/?width=400&height=300&text=Mama%20Roll&bgColor=%23F9EBE4&textColor=%236D4C41" // Replace with actual image URL
+        image: "./images/shahi_mava_rolls_productimage.jpeg" // rolls image
     },
     {
         id: 3,
-        name: "Weekend Special Thali",
-        description: "A complete, wholesome meal available only on weekends. Pre-orders open Thursday.",
-        price: 250,
-        unit: "Per Thali",
-        image: "https://images.placeholders.dev/?width=400&height=300&text=Thali&bgColor=%23F9EBE4&textColor=%236D4C41" // Replace with actual image URL
+        name: "Combo of modak & rolls(Pre Order)",
+        description: "Festive combo of 6 kesar mawa modaks and 4 shahi mawa rolls. Perfect for celebrations and gifting.",
+        price: 249,
+        unit: "6 Modaks + 4 Rolls",
+        image: ".images/combo_of_modak_&_rollsproductimage.jpeg" // combo image
     }
 ];
 
@@ -328,4 +328,3 @@ document.addEventListener('DOMContentLoaded', () => {
         orderForm.addEventListener('submit', handleOrderSubmit);
     }
 });
-
