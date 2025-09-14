@@ -29,7 +29,7 @@ const menuData = [
         description: "Festive combo of 6 kesar mawa modaks and 4 shahi mawa rolls. Perfect for celebrations and gifting.",
         price: 249,
         unit: "6 Modaks + 4 Rolls",
-        image: ".images/combo_of_modak_&_rollsproductimage.jpeg" // combo image
+        image: "./images/combo1.jpeg" // combo image of 1box modak and 1 box rolls
     }
 ];
 
