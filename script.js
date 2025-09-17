@@ -30,6 +30,14 @@ const menuData = [
         price: 264,
         unit: "6 Modaks + 4 Rolls",
         image: "./images/combo1.jpeg" // combo image of 1box modak and 1 box rolls
+    },
+    {
+        id: 4,
+        name: "Milk Shondesh/ Sandesh(Pre Order)",
+        description: "Soft Milk Shondesh, with a subtle fusion twist, a classic sweet perfect for festivals, celebrations, and gifting.",
+        price: 109,
+        unit: "6 Pieces",
+        image: "./images/Sandesh_productimage.jpeg" // sandesh
     }
 ];
 
