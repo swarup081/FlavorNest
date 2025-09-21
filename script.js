@@ -203,7 +203,7 @@ async function handleOrderSubmit(e) {
 
     // Double check that the client is initialized
     if (!supabaseClient) {
-        alert('Connection to the database is not ready. Please try again in a moment.');
+        alert('Connection to the database is not ready. Please try again in a moment or contact us directly.');
         return;
     }
 
@@ -211,12 +211,20 @@ async function handleOrderSubmit(e) {
     submitOrderBtn.innerText = 'Processing...';
 
     const name = document.getElementById('customer-name').value;
+    const phone = document.getElementById('customer-phone').value;
     const address = document.getElementById('customer-address').value;
+
+    if (Object.keys(cart).length === 0) {
+        alert('Your cart is empty. Please add items to your cart before placing an order.');
+        submitOrderBtn.disabled = false;
+        submitOrderBtn.innerText = 'Place Order via WhatsApp';
+        return;
+    }
 
     try {
         const { data: customerData, error: customerError } = await supabaseClient
             .from('customers')
-            .insert([{ name, address }])
+            .insert([{ name, address, phone }]) // MODIFIED
             .select()
             .single();
 
@@ -260,13 +268,14 @@ async function handleOrderSubmit(e) {
         message += `\n*Total: ₹${totalPrice}*\n\n`;
         message += `*My Details:*\n`;
         message += `Name: ${name}\n`;
+        message += `Phone: ${phone}\n`; // MODIFIED
         message += `Address/Pickup: ${address}\n\n`;
         message += `Please confirm my order. Thank you!`;
 
         const whatsappUrl = `https://wa.me/${FLAVORNEST_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
 
-        alert('Your order has been saved successfully!');
+        alert('Your order has been saved successfully! If you were not redirected to WhatsApp, please contact us directly.');        
         cart = {};
         updateCart();
         renderMenu();
@@ -322,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     } catch (e) {
         console.error("Error initializing Supabase client:", e);
-        alert("Could not connect to the database. Some features may not work.");
+        alert("Could not connect please contact us directly .");
         // We still want to render the menu even if Supabase fails
     }
 
