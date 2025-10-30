@@ -9,7 +9,7 @@ let supabaseClient;
 const menuData = [
     {
         id: 1,
-        name: "Kesar Mawa Modak(Pre Order)",
+        name: "Kesar Mawa Modak (Pre Order)",
         description: "Delicate homemade mawa modaks with kesar and premium dry fruits. Perfect for festivals, celebrations, and gifting.",
         price: 129,
         unit: "6 Pieces",
@@ -17,27 +17,51 @@ const menuData = [
     },
     {
         id: 2,
-        name: "Shahi Mawa Rolls(Pre Order)",
+        name: "Shahi Mawa Rolls (Pre Order)",
         description: "Rich rolls stuffed with fresh mawa, fried in ghee and coated in sugar syrup, garnished with grated mawa, boondi, and dry fruits. Ideal for festivals, special occasions, and gifting.",
         price: 149,
         unit: "4 Pieces",
         image: "./images/shahi_mava_rolls_productimage.jpeg" // rolls image
     },
-    {
+    /*{
         id: 3,
         name: "Combo of modak & rolls(Pre Order)",
         description: "Festive combo of 6 kesar mawa modaks and 4 shahi mawa rolls. Perfect for celebrations and gifting.",
         price: 264,
         unit: "6 Modaks + 4 Rolls",
         image: "./images/combo1.jpeg" // combo image of 1box modak and 1 box rolls
-    },
+    },*/
     {
         id: 4,
-        name: "Milk Shondesh/ Sandesh(Pre Order)",
+        name: "Milk Shondesh/ Sandesh (Pre Order)",
         description: "Soft Milk Shondesh, with a subtle fusion twist, a classic sweet perfect for festivals, celebrations, and gifting.",
         price: 109,
         unit: "6 Pieces",
         image: "./images/Sandesh_productimage.jpeg" // sandesh
+    },
+    {
+        id: 5,
+        name: "Thekua (Pre Order)",
+        description: "Authentic handmade Thekua made with 100% whole wheat atta and fried in fresh oil , no palm oil, no preservatives. Crafted in small, limited batches for a perfectly crisp texture and rich traditional flavor.",
+        price: 249,
+        unit: "200 grams",
+        image: "./images/thakua_productimage.jpeg" // thakua
+    },
+    {
+        id: 6,
+        name: "Kesar Elaichi Shondesh (Pre Order)",
+        description: "Delicately flavored with premium saffron and cardamom, this milk-based shondesh offers a soft texture and a gentle, aromatic sweetness in every bite.",
+        price: 129,
+        unit: "6 Pieces",
+        image: "./images/Kesar_Elaichi_Shondesh_product_image.jpeg" // combo image of 1box milk sandesh and 1 box dry fruit sandesh
+    },
+    {
+        id: 7,
+        name: "Chocolate Coconut Burfi / Barfi (Pre Order)",
+        description: "A rich two-layer fusion of tradition and indulgence — one with fresh coconut and mawa, and the other with premium cocoa powder, milk, and vanilla. Smooth, aromatic, and perfectly balanced in sweetness.",
+        price: 312,
+        unit: "12 Pieces",
+        image: "./images/Chocolate_Coconut_Burfi.jpeg" // assorted sweets box
     }
 ];
 
